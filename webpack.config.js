@@ -1,10 +1,11 @@
 const path = require("path");
+const Dotenv = require("dotenv-webpack");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-  entry: ["./src/javascript/index.js", "./src/asset/main.scss"],
+  entry: ["./src/js/index.js", "./src/assets/main.scss"],
 
   output: {
     filename: "[name].[contenthash:8].js",
@@ -20,10 +21,6 @@ module.exports = {
         use: {
           loader: "babel-loader",
         },
-      },
-      {
-        test: /\.vue$/,
-        loader: "vue-loader",
       },
       {
         test: /\.s?css$/,
@@ -52,6 +49,7 @@ module.exports = {
       },
     ],
   },
+
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -62,10 +60,14 @@ module.exports = {
       template: path.resolve(__dirname, "public", "index.html"),
       favicon: "./public/favicon.ico",
     }),
+    new Dotenv({
+      path: "./.env",
+      safe: true,
+    }),
   ],
 
   optimization: {
-    moduleIds: "hashed",
+    moduleIds: "deterministic",
     runtimeChunk: "single",
     splitChunks: {
       cacheGroups: {
